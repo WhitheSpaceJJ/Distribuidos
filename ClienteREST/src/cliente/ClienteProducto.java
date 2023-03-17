@@ -1,40 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/WebServices/JerseyClient.java to edit this template
- */
 package cliente;
 
 import entidades.Producto;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 
-/**
- * Jersey REST client generated for REST resource:ProductoResource
- * [producto]<br>
- * USAGE:
- * <pre>
- *        ClienteProducto client = new ClienteProducto();
- *        Object response = client.XXX(...);
- *        // do whatever with response
- *        client.close();
- * </pre>
- *
- * @author josej
- */
 public class ClienteProducto {
 
-    private WebTarget webTarget;
-    private Client client;
+    private final WebTarget webTarget;
+    private final Client client;
     private static final String BASE_URI = "http://localhost:8080/EjemploREST/webresources";
 
     public ClienteProducto() {
@@ -42,46 +18,81 @@ public class ClienteProducto {
         webTarget = client.target(BASE_URI).path("producto");
     }
 
-    public Response eliminarProducto(String id) throws ClientErrorException {
-        return webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete(Response.class);
+    public void close() {
+        client.close();
+    }
+    
+     public Producto eliminarProducto(String id) throws ClientErrorException {
+         WebTarget resource = webTarget;
+        Producto productoEliminado = null;
+        try {
+            resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
+            productoEliminado = resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).delete(Producto.class);
+        } catch (Exception e) {
+            System.out.println("Error; " + e.getMessage());
+            return null;
+        }
+        return productoEliminado;
     }
 
-    public Response actualizarProducto(Object requestEntity, String id) throws ClientErrorException {
-        return webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON), Response.class);
+    public Producto agregarProducto(Producto productoAgregar) throws ClientErrorException {
+           WebTarget resource = webTarget;
+        Producto productoAgregado = null;
+        try {
+            productoAgregado=resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).
+                post(javax.ws.rs.client.Entity.
+                        entity(productoAgregado, javax.ws.rs.core.MediaType.APPLICATION_JSON),
+                        Producto.class);
+        } catch (Exception e) {
+            System.out.println("Error; "+e.getMessage());
+            return null;
+        }
+        return productoAgregado;
+        
     }
-
-    public <T> T obtenerProductoPorID(Class<T> responseType, String id) throws ClientErrorException {
+    public Producto actualizarProducto(Producto productoActualizar, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+        Producto productoActualizado = null;
+
+        try {
+            resource = resource.path(java.text.MessageFormat.format("{0}",
+                    new Object[]{id}));
+            productoActualizado = resource.request(
+                    javax.ws.rs.core.MediaType.APPLICATION_JSON).
+                    put(javax.ws.rs.client.Entity.entity(productoActualizar,
+                            javax.ws.rs.core.MediaType.APPLICATION_JSON), Producto.class);
+
+        } catch (Exception e) {
+            System.out.println("Error; " + e.getMessage());
+            return null;
+        }
+        return productoActualizado;
     }
 
     public Producto obtenerProductoPorID(String id) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(Producto.class);
+        Producto productoID = null;
+        try {
+            resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
+            productoID = resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(Producto.class);
+        } catch (Exception e) {
+            System.out.println("Error; " + e.getMessage());
+            return null;
+        }
+        return productoID;
     }
 
-    public Response agregarProducto(Object requestEntity) throws ClientErrorException {
-        return webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).
-                post(javax.ws.rs.client.Entity.
-                        entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON),
-                        Response.class);
-    }
-
-    public <T> T obtenerProductos(Class<T> responseType) throws ClientErrorException {
+    public List<Producto> obtenerProductos() throws ClientErrorException {
         WebTarget resource = webTarget;
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
-    }
-
-    public Producto[] obtenerProductos() throws ClientErrorException {
-        WebTarget resource = webTarget;
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(Producto[].class);
-
-    }
-
-    public void close() {
-        client.close();
+        List<Producto> listaProductos = null;
+        try {
+            Producto[] productos = resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(Producto[].class);
+            listaProductos = Arrays.asList(productos);
+        } catch (Exception e) {
+            System.out.println("Error; " + e.getMessage());
+            return null;
+        }
+        return listaProductos;
     }
 
 }
