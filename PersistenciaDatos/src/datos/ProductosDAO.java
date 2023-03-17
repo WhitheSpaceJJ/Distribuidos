@@ -13,11 +13,9 @@ import javax.persistence.criteria.Root;
 public class ProductosDAO implements IProductosDAO {
 
     private IConexionBD conexion;
-
     public ProductosDAO(IConexionBD conexion) {
         this.conexion = conexion;
     }
-
     @Override
     public boolean agregar(Producto producto) {
         try {
