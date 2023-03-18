@@ -4,6 +4,7 @@ import conexion.ConexionBD;
 import datos.ProductosDAO;
 import datosInterfaces.IProductosDAO;
 import entidades.Producto;
+import java.util.ArrayList;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -27,23 +28,22 @@ public class ProductoResource {
 
     @Context
     private UriInfo context;
-    private IProductosDAO productosDAO;
 
     public ProductoResource() {
-        productosDAO = new ProductosDAO(new ConexionBD());
     }
 
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerProductoPorID(@PathParam("id") String id) {
+        IProductosDAO productosDAO = new ProductosDAO(new ConexionBD());
         Producto productoABuscar = null;
         try {
             productoABuscar = productosDAO.consultar(Integer.parseInt(id));
             if (productoABuscar == null) {
-                return Response.ok().entity(productoABuscar).build();
-            } else {
                 return Response.status(Response.Status.NOT_FOUND).build();
+            } else {
+                return Response.ok().entity(productoABuscar).build();
             }
         } catch (NumberFormatException e) {
             System.out.println("Error; " + e.getMessage());
@@ -54,7 +54,8 @@ public class ProductoResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerProductos() {
-        List<Producto> listaProductos = null;
+        IProductosDAO productosDAO = new ProductosDAO(new ConexionBD());
+        List<Producto> listaProductos = new ArrayList<>();
         try {
             listaProductos = productosDAO.consultarTodos();
             if (listaProductos == null) {
@@ -64,7 +65,9 @@ public class ProductoResource {
                 for (Producto producto : listaProductos) {
                     JsonObjectBuilder productoJsonBuilder = Json.createObjectBuilder()
                             .add("id", producto.getId())
-                            .add("nombre", producto.getNombre());
+                            .add("nombre", producto.getNombre())
+                            .add("descripcion", producto.getDescripcion())
+                            .add("marca", producto.getMarca());
                     jsonArrayBuilder.add(productoJsonBuilder.build());
                 }
                 JsonArray jsonArray = jsonArrayBuilder.build();
@@ -81,13 +84,20 @@ public class ProductoResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response actualizarProducto(@PathParam("id") String id, Producto productoActualizado) {
+        IProductosDAO productosDAO = new ProductosDAO(new ConexionBD());
+        Producto productoEncontrar = null;
         try {
-            Producto actualizar = productosDAO.consultar(Integer.parseInt(id));
-            if (actualizar == null) {
-                return Response.status(Response.Status.NOT_FOUND).build();
+            productoEncontrar = productosDAO.consultar(Integer.parseInt(id));
+            if (productoEncontrar != null) {
+                productoActualizado.setId(Integer.valueOf(id));
+                boolean actualizar = productosDAO.actualizar(productoActualizado);
+                if (actualizar) {
+                    return Response.ok().entity(productoActualizado).build();
+                } else {
+                    return Response.status(Response.Status.NOT_MODIFIED).build();
+                }
             } else {
-                productosDAO.actualizar(productoActualizado);
-                return Response.status(Response.Status.OK).entity(actualizar).build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
         } catch (NumberFormatException e) {
             System.out.println("Error; " + e.getMessage());
@@ -99,13 +109,15 @@ public class ProductoResource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response eliminarProducto(@PathParam("id") String id) {
+        IProductosDAO productosDAO = new ProductosDAO(new ConexionBD());
+        Producto eliminar = null;
         try {
-            Producto eliminar = productosDAO.consultar(Integer.parseInt(id));
+            eliminar = productosDAO.consultar(Integer.parseInt(id));
             if (eliminar == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             } else {
                 productosDAO.eliminar(Integer.parseInt(id));
-                return Response.status(Response.Status.OK).entity(eliminar).build();
+                return Response.ok().entity(eliminar).build();
             }
         } catch (NumberFormatException e) {
             System.out.println("Error; " + e.getMessage());
@@ -117,11 +129,12 @@ public class ProductoResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response agregarProducto(Producto producto) {
+        IProductosDAO productosDAO = new ProductosDAO(new ConexionBD());
         try {
-            System.out.println(producto.toString());
             boolean productoAgregar = productosDAO.agregar(producto);
             if (productoAgregar) {
-                return Response.status(Response.Status.OK).entity(producto).build();
+                return Response.ok().entity(producto).build();
+//                return Response.status(Response.Status.OK).entity(productoAgregar).build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }

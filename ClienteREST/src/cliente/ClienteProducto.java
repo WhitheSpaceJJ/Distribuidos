@@ -1,6 +1,7 @@
 package cliente;
 
 import entidades.Producto;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.ws.rs.ClientErrorException;
@@ -21,39 +22,45 @@ public class ClienteProducto {
     public void close() {
         client.close();
     }
-    
-     public Producto eliminarProducto(String id) throws ClientErrorException {
-         WebTarget resource = webTarget;
+
+    public boolean eliminarProducto(String id) throws ClientErrorException {
+        WebTarget resource = webTarget;
         Producto productoEliminado = null;
         try {
             resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
             productoEliminado = resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).delete(Producto.class);
+            if (productoEliminado != null) {
+                return true;
+            }
         } catch (Exception e) {
             System.out.println("Error; " + e.getMessage());
-            return null;
+            return false;
         }
-        return productoEliminado;
+        return false;
     }
 
-    public Producto agregarProducto(Producto productoAgregar) throws ClientErrorException {
-           WebTarget resource = webTarget;
+    public boolean agregarProducto(Producto productoAgregar) throws ClientErrorException {
+        WebTarget resource = webTarget;
         Producto productoAgregado = null;
         try {
-            productoAgregado=resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).
-                post(javax.ws.rs.client.Entity.
-                        entity(productoAgregado, javax.ws.rs.core.MediaType.APPLICATION_JSON),
-                        Producto.class);
+            productoAgregado = resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).
+                    post(javax.ws.rs.client.Entity.
+                            entity(productoAgregar, javax.ws.rs.core.MediaType.APPLICATION_JSON),
+                            Producto.class);
+            if(productoAgregado!=null){
+                return true;
+            }
         } catch (Exception e) {
-            System.out.println("Error; "+e.getMessage());
-            return null;
+            System.out.println("Error; " + e.getMessage());
+            return false;
         }
-        return productoAgregado;
-        
+        return false;
+
     }
+
     public Producto actualizarProducto(Producto productoActualizar, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
         Producto productoActualizado = null;
-
         try {
             resource = resource.path(java.text.MessageFormat.format("{0}",
                     new Object[]{id}));

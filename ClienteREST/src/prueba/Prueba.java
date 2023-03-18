@@ -21,9 +21,8 @@ public class Prueba {
             System.out.println("5. Consultar Productos");
             System.out.println("0. Salir");
             System.out.println("|-------------------------------------------------|");
-
             opcion = scanner.nextInt();
-            scanner.nextLine();
+                        scanner.nextLine();
             switch (opcion) {
                 case 1:
                     System.out.println("|-------------------------------------------------|");
@@ -31,27 +30,31 @@ public class Prueba {
                     System.out.println("|-------------------------------------------------|");
                     System.out.println("Ingrese el nombre del producto:");
                     String nombre = scanner.nextLine();
-                    System.out.println("Ingrese la descripción del producto:");
+                    System.out.println("Ingrese la descripcon del producto:");
                     String descripcion = scanner.nextLine();
                     System.out.println("Ingrese la marca del producto:");
                     String marca = scanner.nextLine();
                     Producto productoNuevo = new Producto(nombre, descripcion, marca);
-                    productosDAO.agregarProducto(productoNuevo);
-                    System.out.println("Producto agregado correctamente.");
+                    boolean agregar=productosDAO.agregarProducto(productoNuevo);
+                    if(agregar){
+                                        System.out.println("Producto agregado correctamente.");
+                    }else{
+                        System.out.println("El producto no se pudo agregar correctamente");
+                    }
                     break;
                 case 2:
                     System.out.println("|-------------------------------------------------|");
                     System.out.println("Actualizacion de Producto");
                     System.out.println("|-------------------------------------------------|");
-
                     System.out.println("Ingrese el ID del producto a actualizar:");
                     int idActualizar = scanner.nextInt();
+                    scanner.nextLine();
                     Producto productoActualizar = productosDAO.obtenerProductoPorID(String.valueOf(idActualizar));
                     if (productoActualizar != null) {
                         System.out.println("Ingrese el nuevo nombre del producto:");
                         productoActualizar.setNombre(scanner.nextLine());
-                        System.out.println("Ingrese la nueva descripción del producto:");
-                        productoActualizar.setNombre(scanner.nextLine());
+                        System.out.println("Ingrese la nueva descripcion del producto:");
+                        productoActualizar.setDescripcion(scanner.nextLine());
                         System.out.println("Ingrese la nueva marca del producto:");
                         productoActualizar.setMarca(scanner.nextLine());
                         productosDAO.actualizarProducto(productoActualizar, String.valueOf(idActualizar));
@@ -64,11 +67,14 @@ public class Prueba {
                     System.out.println("|-------------------------------------------------|");
                     System.out.println("Eliminacion de Producto");
                     System.out.println("|-------------------------------------------------|");
-
                     System.out.println("Ingrese el ID del producto a eliminar:");
                     int idEliminar = scanner.nextInt();
-                    productosDAO.eliminarProducto(String.valueOf(idEliminar));
-                    System.out.println("Producto eliminado correctamente.");
+                    boolean eliminar = productosDAO.eliminarProducto(String.valueOf(idEliminar));
+                    if (eliminar) {
+                        System.out.println("Producto eliminado correctamente.");
+                    } else {
+                        System.out.println("No se pudo eliminar el producto Correctamente");
+                    }
                     break;
                 case 4:
                     System.out.println("|-------------------------------------------------|");
@@ -90,7 +96,7 @@ public class Prueba {
                     System.out.println("Consulta de Productos ");
                     System.out.println("|-------------------------------------------------|");
                     List<Producto> productos = productosDAO.obtenerProductos();
-                    if (productos.isEmpty()) {
+                    if (productos == null) {
                         System.out.println("No se encontraron productos.");
                     } else {
                         System.out.println("Listado de productos:");
@@ -103,7 +109,7 @@ public class Prueba {
                 case 0:
                     System.out.println("Saliendo del programa...");
                 default:
-                    System.out.println("Opción inválida. Intente nuevamente.");
+                    System.out.println("Opcion invalida. Intente nuevamente.");
             }
         } while (opcion != 0);
     }
