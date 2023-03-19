@@ -88,23 +88,33 @@ public class ClienteProducto {
         }
         return productoID;
     }
-
-    public List<Producto> obtenerProductosEspecial(String[] consultas) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        List<Producto> listaProductos = null;
-        try {
-            resource = resource.queryParam("id", new Object[]{consultas[0]});
-            resource = resource.queryParam("nombre", new Object[]{consultas[1]});
-            resource = resource.queryParam("descripcion", new Object[]{consultas[2]});
-            resource = resource.queryParam("marca", new Object[]{consultas[3]});
-            Producto[] productos = resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(Producto[].class);
-            listaProductos = Arrays.asList(productos);
-        } catch (Exception e) {
-            System.out.println("Error; " + e.getMessage());
-            return null;
+public List<Producto> obtenerProductosEspecial(String[] consultas) throws ClientErrorException {
+    WebTarget resource = client.target("http://localhost:8080/EjemploREST/webresources/producto/query");
+    List<Producto> listaProductos = new ArrayList<>();
+    try {
+        if (consultas[0] != null) {
+            resource = resource.queryParam("id", consultas[0]);
         }
-        return listaProductos;
+        if (consultas[1] != null) {
+            resource = resource.queryParam("nombre", consultas[1]);
+        }
+        if (consultas[2] != null) {
+            resource = resource.queryParam("descripcion", consultas[2]);
+        }
+        if (consultas[3] != null) {
+            resource = resource.queryParam("marca", consultas[3]);
+        }
+        Producto[] productos = resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(Producto[].class);
+        listaProductos.addAll(Arrays.asList(productos));
+    } catch (Exception e) {
+        System.out.println("Error; " + e.getMessage());
+        return null;
     }
+    return listaProductos;
+}
+
+
+
 
     public List<Producto> obtenerProductos() throws ClientErrorException {
         WebTarget resource = webTarget;

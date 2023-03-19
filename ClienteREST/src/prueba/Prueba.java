@@ -107,7 +107,6 @@ public class Prueba {
                         }
                     }
                     break;
-
                 case 6:
                     System.out.println("|-------------------------------------------------|");
                     System.out.println("Consulta Especial de Productos");
@@ -117,15 +116,15 @@ public class Prueba {
                     System.out.println("2. Buscar por nombre");
                     System.out.println("3. Buscar por marca");
                     System.out.println("4. Buscar por descripcion");
-                    int opcionBusqueda = scanner.nextInt();
+                    int opcionBusqueda2 = scanner.nextInt();
                     scanner.nextLine();
                     boolean salir = true;
                     String nombre2 = null;
                     String marca2 = null;
                     String descripcion2 = null;
-                    int idConsultar2 = 0;
+                    int idConsultar2 = -1;
                     do {
-                        switch (opcionBusqueda) {
+                        switch (opcionBusqueda2) {
                             case 1 -> {
                                 System.out.println("Ingrese el ID del producto a consultar:");
                                 idConsultar2 = scanner.nextInt();
@@ -151,7 +150,7 @@ public class Prueba {
                         }
                     } while (salir);
                     String[] consultas = new String[4];
-                    consultas[0] = String.valueOf(idConsultar2);
+                    consultas[0] = idConsultar2!=-1?String.valueOf(idConsultar2):null;
                     consultas[1] = nombre2;
                     consultas[2] = descripcion2;
                     consultas[3] = marca2;

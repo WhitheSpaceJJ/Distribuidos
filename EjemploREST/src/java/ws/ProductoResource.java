@@ -43,6 +43,7 @@ public class ProductoResource {
         consultas[1] = nombre != null ? nombre.replace("\\n", "") : null;
         consultas[2] = descripcion != null ? descripcion.replace("\\n", "") : null;
         consultas[3] = marca != null ? marca.replace("\\n", "") : null;
+        System.out.println(consultas);
         List<Producto> listaProductos = new ArrayList<>();
         IProductosDAO productosDAO = new ProductosDAO(new ConexionBD());
         try {
