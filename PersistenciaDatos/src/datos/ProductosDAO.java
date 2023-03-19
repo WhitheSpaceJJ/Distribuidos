@@ -3,6 +3,7 @@ package datos;
 import datosInterfaces.IConexionBD;
 import datosInterfaces.IProductosDAO;
 import entidades.Producto;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -103,22 +104,30 @@ public class ProductosDAO implements IProductosDAO {
             Root<Producto> root = criteria.from(Producto.class);
 
             if (consultas[0] != null) {
-                    criteria = criteria.select(root).where(builder.equal(root.get("id"), Integer.valueOf(consultas[0])));
+                criteria = criteria.select(root).where(builder.equal(root.get("id"), Integer.valueOf(consultas[0])));
+                TypedQuery<Producto> query = em.createQuery(criteria);
+
+                return query.getResultList();
             }
             if (consultas[1] != null) {
                 criteria = criteria.select(root).where(builder.like(root.get("nombre"), "%" + consultas[1] + "%"));
+                TypedQuery<Producto> query = em.createQuery(criteria);
+
+                return query.getResultList();
             }
             if (consultas[2] != null) {
                 criteria = criteria.select(root).where(builder.like(root.get("descripcion"), "%" + consultas[2] + "%"));
+                TypedQuery<Producto> query = em.createQuery(criteria);
+
+                return query.getResultList();
             }
             if (consultas[3] != null) {
                 criteria = criteria.select(root).where(builder.like(root.get("marca"), "%" + consultas[3] + "%"));
+                TypedQuery<Producto> query = em.createQuery(criteria);
+
+                return query.getResultList();
             }
-
-            TypedQuery<Producto> query = em.createQuery(criteria);
-
-            return query.getResultList();
-
+            return new ArrayList<>();
         } catch (IllegalStateException ise) {
             System.err.println("No se pudo consultar los productos por nombre");
             return null;

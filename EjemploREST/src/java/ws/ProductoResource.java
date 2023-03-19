@@ -39,14 +39,14 @@ public class ProductoResource {
     public Response obtenerProductosEspecial(@QueryParam("id") String id, @QueryParam("nombre") String nombre,
             @QueryParam("descripcion") String descripcion, @QueryParam("marca") String marca) {
         String[] consultas = new String[4];
-        consultas[0] =id.replace("\n", "");
-        consultas[1] = nombre.replace("\n", "");
-        consultas[2] = descripcion.replace("\n", "");
-        consultas[3] = marca.replace("\n", "");
-        List<Producto> listaProductos =new ArrayList<>();
+        consultas[0] = id != null ? id.replace("\\n", "") : null;
+        consultas[1] = nombre != null ? nombre.replace("\\n", "") : null;
+        consultas[2] = descripcion != null ? descripcion.replace("\\n", "") : null;
+        consultas[3] = marca != null ? marca.replace("\\n", "") : null;
+        List<Producto> listaProductos = new ArrayList<>();
         IProductosDAO productosDAO = new ProductosDAO(new ConexionBD());
         try {
-            listaProductos = productosDAO.consultarEspecial(consultas) ;
+            listaProductos = productosDAO.consultarEspecial(consultas);
             if (listaProductos.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             } else {

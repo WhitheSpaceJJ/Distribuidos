@@ -112,11 +112,11 @@ public class Prueba {
                     System.out.println("|-------------------------------------------------|");
                     System.out.println("Consulta Especial de Productos");
                     System.out.println("|-------------------------------------------------|");
-                    System.out.println("Seleccione una opción de búsqueda:");
+                    System.out.println("Seleccione una opcion de busqueda:");
                     System.out.println("1. Buscar por ID");
                     System.out.println("2. Buscar por nombre");
                     System.out.println("3. Buscar por marca");
-                    System.out.println("4. Buscar por descripción");
+                    System.out.println("4. Buscar por descripcion");
                     int opcionBusqueda = scanner.nextInt();
                     scanner.nextLine();
                     boolean salir = true;
@@ -127,7 +127,6 @@ public class Prueba {
                     do {
                         switch (opcionBusqueda) {
                             case 1 -> {
-                                // Lógica de búsqueda por ID
                                 System.out.println("Ingrese el ID del producto a consultar:");
                                 idConsultar2 = scanner.nextInt();
                                 salir = false;
@@ -148,7 +147,7 @@ public class Prueba {
                                 salir = false;
                             }
                             default ->
-                                System.out.println("Opción inválida. Intente nuevamente.");
+                                System.out.println("Opcion invalida. Intente nuevamente.");
                         }
                     } while (salir);
                     String[] consultas = new String[4];

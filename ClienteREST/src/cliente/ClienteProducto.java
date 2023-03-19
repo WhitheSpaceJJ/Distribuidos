@@ -93,10 +93,10 @@ public class ClienteProducto {
         WebTarget resource = webTarget;
         List<Producto> listaProductos = null;
         try {
-            resource = resource.queryParam("id", consultas[0]);
-            resource = resource.queryParam("nombre", consultas[1]);
-            resource = resource.queryParam("descripcion", consultas[2]);
-            resource = resource.queryParam("marca", consultas[3]);
+            resource = resource.queryParam("id", new Object[]{consultas[0]});
+            resource = resource.queryParam("nombre", new Object[]{consultas[1]});
+            resource = resource.queryParam("descripcion", new Object[]{consultas[2]});
+            resource = resource.queryParam("marca", new Object[]{consultas[3]});
             Producto[] productos = resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(Producto[].class);
             listaProductos = Arrays.asList(productos);
         } catch (Exception e) {
