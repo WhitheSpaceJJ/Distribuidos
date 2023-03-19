@@ -20,6 +20,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -30,6 +31,41 @@ public class ProductoResource {
     private UriInfo context;
 
     public ProductoResource() {
+    }
+
+    @GET
+    @Path("/query")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obtenerProductosEspecial(@QueryParam("id") String id, @QueryParam("nombre") String nombre,
+            @QueryParam("descripcion") String descripcion, @QueryParam("marca") String marca) {
+        String[] consultas = new String[4];
+        consultas[0] =id.replace("\n", "");
+        consultas[1] = nombre.replace("\n", "");
+        consultas[2] = descripcion.replace("\n", "");
+        consultas[3] = marca.replace("\n", "");
+        List<Producto> listaProductos =new ArrayList<>();
+        IProductosDAO productosDAO = new ProductosDAO(new ConexionBD());
+        try {
+            listaProductos = productosDAO.consultarEspecial(consultas) ;
+            if (listaProductos.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            } else {
+                JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+                for (Producto producto : listaProductos) {
+                    JsonObjectBuilder productoJsonBuilder = Json.createObjectBuilder()
+                            .add("id", producto.getId())
+                            .add("nombre", producto.getNombre())
+                            .add("descripcion", producto.getDescripcion())
+                            .add("marca", producto.getMarca());
+                    jsonArrayBuilder.add(productoJsonBuilder.build());
+                }
+                JsonArray jsonArray = jsonArrayBuilder.build();
+                return Response.ok().entity(jsonArray.toString()).build();
+            }
+        } catch (Exception e) {
+            System.out.println("Error; " + e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @GET
@@ -58,7 +94,7 @@ public class ProductoResource {
         List<Producto> listaProductos = new ArrayList<>();
         try {
             listaProductos = productosDAO.consultarTodos();
-            if (listaProductos == null) {
+            if (listaProductos.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             } else {
                 JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();

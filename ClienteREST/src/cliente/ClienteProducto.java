@@ -47,7 +47,7 @@ public class ClienteProducto {
                     post(javax.ws.rs.client.Entity.
                             entity(productoAgregar, javax.ws.rs.core.MediaType.APPLICATION_JSON),
                             Producto.class);
-            if(productoAgregado!=null){
+            if (productoAgregado != null) {
                 return true;
             }
         } catch (Exception e) {
@@ -87,6 +87,23 @@ public class ClienteProducto {
             return null;
         }
         return productoID;
+    }
+
+    public List<Producto> obtenerProductosEspecial(String[] consultas) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        List<Producto> listaProductos = null;
+        try {
+            resource = resource.queryParam("id", consultas[0]);
+            resource = resource.queryParam("nombre", consultas[1]);
+            resource = resource.queryParam("descripcion", consultas[2]);
+            resource = resource.queryParam("marca", consultas[3]);
+            Producto[] productos = resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(Producto[].class);
+            listaProductos = Arrays.asList(productos);
+        } catch (Exception e) {
+            System.out.println("Error; " + e.getMessage());
+            return null;
+        }
+        return listaProductos;
     }
 
     public List<Producto> obtenerProductos() throws ClientErrorException {

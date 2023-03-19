@@ -13,7 +13,7 @@ public interface IProductosDAO {
 
     public Producto consultar(int id);
 
-    public List<Producto> consultarEspecial(Object paramtroEspecial);
+    public List<Producto> consultarEspecial(String[] consultas);
 
     public List<Producto> consultarTodos();
 

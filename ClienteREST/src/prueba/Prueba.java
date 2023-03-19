@@ -19,10 +19,11 @@ public class Prueba {
             System.out.println("3. Eliminar Prodicuto");
             System.out.println("4. Consultar Producto ID");
             System.out.println("5. Consultar Productos");
+            System.out.println("6. Consulta Especial");
             System.out.println("0. Salir");
             System.out.println("|-------------------------------------------------|");
             opcion = scanner.nextInt();
-                        scanner.nextLine();
+            scanner.nextLine();
             switch (opcion) {
                 case 1:
                     System.out.println("|-------------------------------------------------|");
@@ -35,10 +36,10 @@ public class Prueba {
                     System.out.println("Ingrese la marca del producto:");
                     String marca = scanner.nextLine();
                     Producto productoNuevo = new Producto(nombre, descripcion, marca);
-                    boolean agregar=productosDAO.agregarProducto(productoNuevo);
-                    if(agregar){
-                                        System.out.println("Producto agregado correctamente.");
-                    }else{
+                    boolean agregar = productosDAO.agregarProducto(productoNuevo);
+                    if (agregar) {
+                        System.out.println("Producto agregado correctamente.");
+                    } else {
                         System.out.println("El producto no se pudo agregar correctamente");
                     }
                     break;
@@ -101,6 +102,69 @@ public class Prueba {
                     } else {
                         System.out.println("Listado de productos:");
                         for (Producto producto : productos) {
+                            System.out.println("ID; " + producto.getId() + ", Nombre; " + producto.getNombre() + ", Marca ; " + producto.getMarca());
+                            System.out.println("Descripcion; " + producto.getDescripcion());
+                        }
+                    }
+                    break;
+
+                case 6:
+                    System.out.println("|-------------------------------------------------|");
+                    System.out.println("Consulta Especial de Productos");
+                    System.out.println("|-------------------------------------------------|");
+                    System.out.println("Seleccione una opción de búsqueda:");
+                    System.out.println("1. Buscar por ID");
+                    System.out.println("2. Buscar por nombre");
+                    System.out.println("3. Buscar por marca");
+                    System.out.println("4. Buscar por descripción");
+                    int opcionBusqueda = scanner.nextInt();
+                    scanner.nextLine();
+                    boolean salir = true;
+                    String nombre2 = null;
+                    String marca2 = null;
+                    String descripcion2 = null;
+                    int idConsultar2 = 0;
+                    do {
+                        switch (opcionBusqueda) {
+                            case 1 -> {
+                                // Lógica de búsqueda por ID
+                                System.out.println("Ingrese el ID del producto a consultar:");
+                                idConsultar2 = scanner.nextInt();
+                                salir = false;
+                            }
+                            case 2 -> {
+                                System.out.println("Ingrese el nombre del producto:");
+                                nombre2 = scanner.nextLine();
+                                salir = false;
+                            }
+                            case 3 -> {
+                                System.out.println("Ingrese la marca del producto:");
+                                marca2 = scanner.nextLine();
+                                salir = false;
+                            }
+                            case 4 -> {
+                                System.out.println("Ingrese la descripcon del producto:");
+                                descripcion2 = scanner.nextLine();
+                                salir = false;
+                            }
+                            default ->
+                                System.out.println("Opción inválida. Intente nuevamente.");
+                        }
+                    } while (salir);
+                    String[] consultas = new String[4];
+                    consultas[0] = String.valueOf(idConsultar2);
+                    consultas[1] = nombre2;
+                    consultas[2] = descripcion2;
+                    consultas[3] = marca2;
+                    System.out.println("|-------------------------------------------------|");
+                    System.out.println("Consulta de Productos Especial ");
+                    System.out.println("|-------------------------------------------------|");
+                    List<Producto> productosEspecial = productosDAO.obtenerProductosEspecial(consultas);
+                    if (productosEspecial == null) {
+                        System.out.println("No se encontraron productos.");
+                    } else {
+                        System.out.println("Listado de productos:");
+                        for (Producto producto : productosEspecial) {
                             System.out.println("ID; " + producto.getId() + ", Nombre; " + producto.getNombre() + ", Marca ; " + producto.getMarca());
                             System.out.println("Descripcion; " + producto.getDescripcion());
                         }
